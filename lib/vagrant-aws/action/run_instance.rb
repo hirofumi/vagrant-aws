@@ -219,6 +219,10 @@ module VagrantPlugins
             spot_req = env[:aws_compute].describe_spot_instance_requests(
               'spot-instance-request-id' => [spot_request_id]).body["spotInstanceRequestSet"].first
             next if spot_req.nil? # are we too fast?
+
+            # waiting for spot request ready
+            next unless spot_req
+
             # display something whenever the status code changes
             if status_code != spot_req["fault"]["code"]
               env[:ui].info("Status: #{spot_req["fault"]["message"]}")
